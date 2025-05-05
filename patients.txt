@@ -1,0 +1,2 @@
+528e8906-ae54-473b-92b9-0da91fdfdcb2,test,$2a$10$cZgV8cAURiJNekZrRh73OuuknOR/LsnbQhpv30QwWoxL/.m1TltAi,jimmy.trainer@gmail.com,test and test2,4455554411,ewfe
+a507be55-b62f-4eaf-ac83-809989da7f40,yasa,$2a$10$iqIkMS1ha1pO0TgA1Ke9Ketk4C6X7Z.4w6nTDm7UB46X7Hic3Y2C2,y@gmail.com,vhvjk,68487,vj
