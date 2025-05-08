@@ -17,6 +17,10 @@ public class PatientService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
     public void updatePatient(Patient updatedPatient) {
         try {
             List<Patient> patients = readPatients();
@@ -48,16 +52,16 @@ public class PatientService {
         try {
             // Generate unique ID
             patient.setId(UUID.randomUUID().toString());
-            
+
             // Encode password
             patient.setPassword(passwordEncoder.encode(patient.getPassword()));
-            
+
             // Read existing patients
             List<Patient> patients = readPatients();
-            
+
             // Add new patient
             patients.add(patient);
-            
+
             // Write back to file
             writePatients(patients);
         } catch (IOException e) {
@@ -69,9 +73,9 @@ public class PatientService {
         try {
             List<Patient> patients = readPatients();
             return patients.stream()
-                    .filter(p -> p.getUsername().equals(username) && 
-                           (passwordEncoder.matches(password, p.getPassword()) || 
-                            password.equals(p.getPassword()))) // Allow both encoded and plain text passwords
+                    .filter(p -> p.getUsername().equals(username) &&
+                            (passwordEncoder.matches(password, p.getPassword()) ||
+                                    password.equals(p.getPassword()))) // Allow both encoded and plain text passwords
                     .findFirst()
                     .orElse(null);
         } catch (IOException e) {
@@ -79,10 +83,20 @@ public class PatientService {
         }
     }
 
+    public void deletePatient(String id) {
+        try {
+            List<Patient> patients = readPatients();
+            patients.removeIf(p -> p.getId().equals(id));
+            writePatients(patients);
+        } catch (IOException e) {
+            throw new RuntimeException("Error deleting patient", e);
+        }
+    }
+
     private List<Patient> readPatients() throws IOException {
         List<Patient> patients = new ArrayList<>();
         File file = new File(FILE_PATH);
-        
+
         if (!file.exists()) {
             return patients;
         }
@@ -93,13 +107,13 @@ public class PatientService {
                 String[] parts = line.split(",");
                 if (parts.length >= 7) {
                     Patient patient = new Patient(
-                        parts[0], // id
-                        parts[1], // username
-                        parts[2], // password
-                        parts[3], // email
-                        parts[4], // fullName
-                        parts[5], // phoneNumber
-                        parts[6]  // address
+                            parts[0], // id
+                            parts[1], // username
+                            parts[2], // password
+                            parts[3], // email
+                            parts[4], // fullName
+                            parts[5], // phoneNumber
+                            parts[6]  // address
                     );
                     patients.add(patient);
                 }
@@ -112,15 +126,15 @@ public class PatientService {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (Patient patient : patients) {
                 writer.write(String.format("%s,%s,%s,%s,%s,%s,%s%n",
-                    patient.getId(),
-                    patient.getUsername(),
-                    patient.getPassword(),
-                    patient.getEmail(),
-                    patient.getFullName(),
-                    patient.getPhoneNumber(),
-                    patient.getAddress()
+                        patient.getId(),
+                        patient.getUsername(),
+                        patient.getPassword(),
+                        patient.getEmail(),
+                        patient.getFullName(),
+                        patient.getPhoneNumber(),
+                        patient.getAddress()
                 ));
             }
         }
     }
-} 
+}
